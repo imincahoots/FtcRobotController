@@ -172,18 +172,18 @@ public class Drivetrain {
         setMotRUE();                            // Run Using Encoder
 
         if(direction == Turn.LEFT && heading < currentHeading){
-            setMotPow(-0.3,-0.3,0.3,0.3,1);
+            setMotPow(-0.5,-0.5,0.5,0.5,1);
             return false;
         }
         if (direction == Turn.RIGHT && heading > currentHeading) {
-            setMotPow(0.3,0.3,-0.3,-0.3,1);
+            setMotPow(0.5,0.5,-0.5,-0.5,1);
             return false;
         }
 
         if(direction == Turn.LEFT){
             //we are turning left
             if(getHeading(AngleUnit.DEGREES)<(heading-overShootAdjuster)){
-                setMotPow(-0.3,-0.3,0.3,0.3,1);
+                setMotPow(-0.5,-0.5,0.5,0.5,1);
                 return false;
             } else {
                 setMotPow(0,0,0,0,0);
@@ -193,7 +193,7 @@ public class Drivetrain {
         if (direction == Turn.RIGHT){
             //we are turning right
             if(getHeading(AngleUnit.DEGREES)>(heading+overShootAdjuster)){
-                setMotPow(0.3,0.3,-0.3,-0.3,1);
+                setMotPow(0.5,0.5,-0.5,-0.5,1);
                 return false;
             } else {
                 setMotPow(0,0,0,0,0);

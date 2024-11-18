@@ -66,9 +66,19 @@ public class LiftTestOpMode extends OpMode
     @Override
     public void loop() {
 
+        int liftTargetPos = 0;
+
         double speedCmd = -gamepad1.right_stick_y;
 
-        myLift.movSlide(speedCmd);
+        if (gamepad1.a){
+            liftTargetPos = 1610;
+        }
+        if (gamepad1.b){
+            liftTargetPos = 0;
+        }
+        myLift.liftTransit(liftTargetPos);
+
+        //myLift.movSlide(speedCmd);
 
         //myLift.setToEnc();
         //myLift.moveSimple(gamepad1.right_stick_y);
