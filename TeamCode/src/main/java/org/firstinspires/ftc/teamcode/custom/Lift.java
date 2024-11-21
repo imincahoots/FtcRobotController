@@ -45,7 +45,7 @@ public class Lift {
         holdPosition(positionLinearSlideMotorMinLeft, positionLinearSlideMotorMinRight);
     }
     //Move up or down as commanded by joystick.  Stop when joystick is 0 and hold position.
-    public void movSlide(double speedCmd){
+    public void moveSlide(double speedCmd){
         //linear slide
         if (speedCmd == 0){
             holdPosition(positionLinearSlideMotorLeft, positionLinearSlideMotorRight);
@@ -53,7 +53,7 @@ public class Lift {
             holdPosition(positionLinearSlideMotorMinLeft, positionLinearSlideMotorMinRight);
         } else if (((positionLinearSlideMotorLeft > positionLinearSlideMotorMaxLeft) && (speedCmd > 0))) {
             holdPosition(positionLinearSlideMotorMaxLeft, positionLinearSlideMotorMaxRight);
-        } else if (positionLinearSlideMotorLeft == 0 && speedCmd == 0) {
+        } else if (positionLinearSlideMotorLeft <= 15 && speedCmd == 0) {
             linearSlideMotorLeft.setPower(0);
             linearSlideMotorRight.setPower(0);
         }else {

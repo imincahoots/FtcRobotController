@@ -234,7 +234,7 @@ public class ITDMainAutonomousLeft extends OpMode
                 }
                 break;
             case 120:                           //drive along submersible
-                stepDone = myDrivetrain.moveForwardInches( 24);
+                stepDone = myDrivetrain.moveForwardInches( 36);
                 if (stepDone){
                     step = 130;
                 }

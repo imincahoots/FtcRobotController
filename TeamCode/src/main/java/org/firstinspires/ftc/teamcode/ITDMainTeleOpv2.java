@@ -206,7 +206,7 @@ public class ITDMainTeleOpv2 extends OpMode
         }
 
        //linear slide
-        myLift.movSlide(-ry2);
+        myLift.moveSlide(-ry2);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
