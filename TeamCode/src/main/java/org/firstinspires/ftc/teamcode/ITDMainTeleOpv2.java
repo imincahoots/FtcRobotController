@@ -195,7 +195,7 @@ public class ITDMainTeleOpv2 extends OpMode
         }
         else {
           armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-          armMotor.setPower(ly2);
+          armMotor.setPower(ly2*0.5);
           positionArmMotor = armMotor.getCurrentPosition();
         }
         if (gamepad2.x){

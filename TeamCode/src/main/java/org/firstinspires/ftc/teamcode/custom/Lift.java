@@ -53,7 +53,10 @@ public class Lift {
             holdPosition(positionLinearSlideMotorMinLeft, positionLinearSlideMotorMinRight);
         } else if (((positionLinearSlideMotorLeft > positionLinearSlideMotorMaxLeft) && (speedCmd > 0))) {
             holdPosition(positionLinearSlideMotorMaxLeft, positionLinearSlideMotorMaxRight);
-        } else {
+        } else if (positionLinearSlideMotorLeft == 0 && speedCmd == 0) {
+            linearSlideMotorLeft.setPower(0);
+            linearSlideMotorRight.setPower(0);
+        }else {
             linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             linearSlideMotorLeft.setPower(speedCmd);
             linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
