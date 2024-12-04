@@ -29,12 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.custom.ArmMotor;
 import org.firstinspires.ftc.teamcode.custom.Drivetrain;
@@ -108,19 +104,19 @@ public class MotorIOTest extends OpMode {
             telemetry.addData("motor: ", "back right");
 
         }else if ( gamepad1.dpad_left){
-            myLift.linearSlideMotorLeft.setPower(1);
-            myLift.linearSlideMotorRight.setPower(1);
+            myLift.LSMLeft.setPower(1);
+            myLift.LSMRight.setPower(1);
         }else if (gamepad1.dpad_right){
-            myLift.linearSlideMotorLeft.setPower(-1);
-            myLift.linearSlideMotorRight.setPower(-1);
+            myLift.LSMLeft.setPower(-1);
+            myLift.LSMRight.setPower(-1);
         }else if (gamepad1.dpad_down){
             myArmMotor.armMot.setPower(1);
         } else if (gamepad1.dpad_up){
             myArmMotor.armMot.setPower(-1);
         }else{
             myDriveTrain.setMotPow(0,0,0,0,0);
-            myLift.linearSlideMotorLeft.setPower(0);
-            myLift.linearSlideMotorRight.setPower(0);
+            myLift.LSMLeft.setPower(0);
+            myLift.LSMRight.setPower(0);
             myArmMotor.armMot.setPower(0);
             telemetry.addData("motor: ", "none");
         }
@@ -131,8 +127,8 @@ public class MotorIOTest extends OpMode {
         telemetry.addData("front right position",myDriveTrain.frMot.getCurrentPosition());
         telemetry.addData("back right position",myDriveTrain.brMot.getCurrentPosition());
         telemetry.addData("armMotor position",myArmMotor.armMot.getCurrentPosition());
-        telemetry.addData("liftMotLeft position",myLift.linearSlideMotorLeft);
-        telemetry.addData("liftMotRight position",myLift.linearSlideMotorRight);
+        telemetry.addData("liftMotLeft position",myLift.LSMLeft);
+        telemetry.addData("liftMotRight position",myLift.LSMRight);
         telemetry.addData("=== CONTROLS ===", null);
         telemetry.addData("drivetrain:","a = fl,b = bl,x = fr,y = br");
         telemetry.addData("armMotor","dpad up = up, dpad down = down");

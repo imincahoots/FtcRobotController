@@ -33,11 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.custom.ArmMotor;
 import org.firstinspires.ftc.teamcode.custom.Drivetrain;
 import org.firstinspires.ftc.teamcode.custom.Lift;
 
@@ -211,8 +209,8 @@ public class ITDMainTeleOpv2 extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("LeftTrigger", gamepad1.left_trigger);
-        telemetry.addData("leftLiftMotor ", myLift.linearSlideMotorLeft.getCurrentPosition());
-        telemetry.addData("rightLiftMotor ", myLift.linearSlideMotorRight.getCurrentPosition());
+        telemetry.addData("leftLiftMotor ", myLift.LSMLeft.getCurrentPosition());
+        telemetry.addData("rightLiftMotor ", myLift.LSMRight.getCurrentPosition());
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
     }
 

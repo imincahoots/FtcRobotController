@@ -180,7 +180,7 @@ public class ITDMainAutonomousLeft extends OpMode
                 }
                 break;
             case 50:                            //move to baskets
-                stepDone = myDrivetrain.moveForwardInches(10);
+                stepDone = myDrivetrain.moveForwardInches(6);
                 if (stepDone){
                     step = 60;
                 }
@@ -222,7 +222,7 @@ public class ITDMainAutonomousLeft extends OpMode
                 }
                 break;
             case 100:                           //drive toward submersible
-                stepDone = myDrivetrain.moveForwardInches(24);
+                stepDone = myDrivetrain.moveForwardInches(18);
                 if (stepDone){
                     step = 110;
                 }

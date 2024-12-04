@@ -98,8 +98,8 @@ public class ITDDualGamepadv2ls extends OpMode
         crServoRubberWheel = hardwareMap.crservo.get("crServoRubberWheel");
         wristServo = hardwareMap.servo.get("wristServo");
         armMotor = hardwareMap.dcMotor.get("armMotor");
-        linearSlideMotorLeft = hardwareMap.dcMotor.get("linearSlideMotorLeft");
-        linearSlideMotorRight = hardwareMap.dcMotor.get("linearSlideMotorRight");
+        linearSlideMotorLeft = hardwareMap.dcMotor.get("LSMLeft");
+        linearSlideMotorRight = hardwareMap.dcMotor.get("LSMRight");
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);

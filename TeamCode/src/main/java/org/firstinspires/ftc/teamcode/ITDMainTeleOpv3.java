@@ -33,14 +33,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.custom.ArmMotor;
 import org.firstinspires.ftc.teamcode.custom.Drivetrain;
 import org.firstinspires.ftc.teamcode.custom.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.custom.Lift;
@@ -247,7 +245,7 @@ public class ITDMainTeleOpv3 extends OpMode
         }
 
         //linear slide
-        myLift.moveSlide(-ry2);
+        myLift.moveSlideWorm(-ry2);
 
         //calculates the frequency at which the program can complete one loop through the program
         double newTime = getRuntime();
@@ -259,8 +257,8 @@ public class ITDMainTeleOpv3 extends OpMode
         telemetry.addData("Rev Hub Clock Speed", frequency);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("LeftTrigger", gamepad1.left_trigger);
-        telemetry.addData("leftLiftMotor ", myLift.linearSlideMotorLeft.getCurrentPosition());
-        telemetry.addData("rightLiftMotor ", myLift.linearSlideMotorRight.getCurrentPosition());
+        telemetry.addData("leftLiftMotor ", myLift.LSMLeft.getCurrentPosition());
+        telemetry.addData("rightLiftMotor ", myLift.LSMRight.getCurrentPosition());
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
     }
 

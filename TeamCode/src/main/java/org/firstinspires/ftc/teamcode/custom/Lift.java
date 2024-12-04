@@ -5,80 +5,102 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Lift {
-
-    public DcMotor linearSlideMotorLeft = null;
-    public DcMotor linearSlideMotorRight = null;
-    private int positionLinearSlideMotorLeft = 0;
-    private int positionLinearSlideMotorMinLeft = 0;
-    private int positionLinearSlideMotorMaxLeft = 0;
-    private int positionLinearSlideMotorRight = 0;
-    private int positionLinearSlideMotorMinRight = 0;
-    private int positionLinearSlideMotorMaxRight = 0;
-    private int positionLinearSlideMotorAvg = 0;
+    //LSM = Linear Slide Motor
+    public DcMotor LSMLeft = null;
+    public DcMotor LSMRight = null;
+    private int posLSMLeft = 0;
+    private int posLSMMinLeft = 0;
+    private int posLSMMaxLeft = 0;
+    private int posLSMRight = 0;
+    private int posLSMMinRight = 0;
+    private int posLSMMaxRight = 0;
+    private int posLSMMaxLeftWorm = 0;
+    private int posLSMMaxRightWorm = 0;
+    private int posLSMAvg = 0;
     private int moveStatus;
     private int requestedPos;
     
     //Constructor
     public Lift(HardwareMap hwMap) {
-        linearSlideMotorLeft = hwMap.dcMotor.get("linearSlideMotorLeft");
-        linearSlideMotorRight = hwMap.dcMotor.get("linearSlideMotorRight");
-        linearSlideMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        linearSlideMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        positionLinearSlideMotorMinLeft = linearSlideMotorLeft.getCurrentPosition();
-        positionLinearSlideMotorMinRight = linearSlideMotorRight.getCurrentPosition();
-        positionLinearSlideMotorMaxLeft = linearSlideMotorLeft.getCurrentPosition() + 2100;
-        positionLinearSlideMotorMaxRight = linearSlideMotorRight.getCurrentPosition() + 2100;
+        LSMLeft = hwMap.dcMotor.get("LinearSlideMotorLeft");
+        LSMRight = hwMap.dcMotor.get("LinearSlideMotorRight");
+        LSMRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        LSMLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        posLSMMinLeft = LSMLeft.getCurrentPosition();
+        posLSMMinRight = LSMRight.getCurrentPosition();
+        posLSMMaxLeft = LSMLeft.getCurrentPosition() + 2100;
+        posLSMMaxRight = LSMRight.getCurrentPosition() + 2100;
+        posLSMMaxLeftWorm = LSMLeft.getCurrentPosition() + 210000;
+        posLSMMaxRightWorm = LSMRight.getCurrentPosition() + 210000;
+        LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        linearSlideMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        linearSlideMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LSMLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        LSMRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        linearSlideMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        linearSlideMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //linearSlideMotorLeft.setTargetPosition(positionLinearSlideMotorMinLeft);
-        //linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //linearSlideMotorRight.setTargetPosition(positionLinearSlideMotorMinRight);
-        //linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //LSMLeft.setTargetPosition(posLSMMinLeft);
+        //LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //LSMRight.setTargetPosition(posLSMMinRight);
+        //LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     
     public void holdBottom(){
-        holdPosition(positionLinearSlideMotorMinLeft, positionLinearSlideMotorMinRight);
+        holdPosition(posLSMMinLeft, posLSMMinRight);
     }
     //Move up or down as commanded by joystick.  Stop when joystick is 0 and hold position.
     public void moveSlide(double speedCmd){
         //linear slide
         if (speedCmd == 0){
-            holdPosition(positionLinearSlideMotorLeft, positionLinearSlideMotorRight);
-        } else if ((positionLinearSlideMotorLeft < positionLinearSlideMotorMinLeft) && (speedCmd < 0)){
-            holdPosition(positionLinearSlideMotorMinLeft, positionLinearSlideMotorMinRight);
-        } else if (((positionLinearSlideMotorLeft > positionLinearSlideMotorMaxLeft) && (speedCmd > 0))) {
-            holdPosition(positionLinearSlideMotorMaxLeft, positionLinearSlideMotorMaxRight);
-        } else if (positionLinearSlideMotorLeft <= 15 && speedCmd == 0) {
-            linearSlideMotorLeft.setPower(0);
-            linearSlideMotorRight.setPower(0);
+            holdPosition(posLSMLeft, posLSMRight);
+        } else if ((posLSMLeft < posLSMMinLeft) && (speedCmd < 0)){
+            holdPosition(posLSMMinLeft, posLSMMinRight);
+        } else if (((posLSMLeft > posLSMMaxLeft) && (speedCmd > 0))) {
+            holdPosition(posLSMMaxLeft, posLSMMaxRight);
+        } else if (posLSMLeft <= 15 && speedCmd == 0) {
+            LSMLeft.setPower(0);
+            LSMRight.setPower(0);
         }else {
-            linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            linearSlideMotorLeft.setPower(speedCmd);
-            linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            linearSlideMotorRight.setPower(speedCmd);
-            positionLinearSlideMotorLeft = linearSlideMotorLeft.getCurrentPosition();
-            positionLinearSlideMotorRight = linearSlideMotorRight.getCurrentPosition();
+            LSMLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LSMLeft.setPower(speedCmd);
+            LSMRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LSMRight.setPower(speedCmd);
+            posLSMLeft = LSMLeft.getCurrentPosition();
+            posLSMRight = LSMRight.getCurrentPosition();
+        }
+    }
+    
+    public void moveSlideWorm(double speedCmd){
+        if (speedCmd == 0){
+            LSMLeft.setPower(0);
+            LSMRight.setPower(0);
+        }  else if (posLSMLeft <= 15 && speedCmd == 0) {
+            LSMLeft.setPower(0);
+            LSMRight.setPower(0);
+        } else if (((posLSMLeft > posLSMMaxLeftWorm) && (speedCmd > 0))) {
+            holdPosition(posLSMMaxLeftWorm, posLSMMaxRightWorm);
+        } else {
+            LSMLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LSMLeft.setPower(speedCmd);
+            LSMRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LSMRight.setPower(speedCmd);
+            posLSMLeft = LSMLeft.getCurrentPosition();
+            posLSMRight = LSMRight.getCurrentPosition();
         }
     }
 
     public boolean holdPosition(int left, int right){
         //this method hold the position it is being passed DO NOT USE IT TO GO TO A NEW POSITION
         //for that, use liftTransit
-        linearSlideMotorLeft.setTargetPosition(left);
-        linearSlideMotorRight.setTargetPosition(right);
-        linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        linearSlideMotorLeft.setPower(1.0);
-        linearSlideMotorRight.setPower(1.0);
-        if (linearSlideMotorLeft.getCurrentPosition() == left && linearSlideMotorRight.getCurrentPosition() == right){
-            if(linearSlideMotorLeft.getCurrentPosition() <= 0){
-                linearSlideMotorLeft.setPower(0);
-                linearSlideMotorRight.setPower(0);
+        LSMLeft.setTargetPosition(left);
+        LSMRight.setTargetPosition(right);
+        LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LSMLeft.setPower(1.0);
+        LSMRight.setPower(1.0);
+        if (LSMLeft.getCurrentPosition() == left && LSMRight.getCurrentPosition() == right){
+            if(LSMLeft.getCurrentPosition() <= 0){
+                LSMLeft.setPower(0);
+                LSMRight.setPower(0);
             }
             return true;
         }else {
@@ -93,76 +115,76 @@ public class Lift {
         if (position > requestedPos){
             moveStatus = 1;
             RUE();
-            linearSlideMotorLeft.setPower(1);
-            linearSlideMotorRight.setPower(1);
+            LSMLeft.setPower(1);
+            LSMRight.setPower(1);
         }
         //if current position is below, go down
         else if (position < requestedPos){
             moveStatus = 2;
             RUE();
-            linearSlideMotorLeft.setPower(-1);
-            linearSlideMotorRight.setPower(-1);
+            LSMLeft.setPower(-1);
+            LSMRight.setPower(-1);
         }
         //when you get there, hold position
        if (moveStatus == 1){
             //if moving up
-            if (linearSlideMotorLeft.getCurrentPosition() >= position){
+            if (LSMLeft.getCurrentPosition() >= position){
                 //means you are moving up and now you are done
-                linearSlideMotorLeft.setTargetPosition(position);
-                linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                linearSlideMotorRight.setTargetPosition(position);
-                linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                LSMLeft.setTargetPosition(position);
+                LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                LSMRight.setTargetPosition(position);
+                LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 done = true;
                 requestedPos = position;
                 moveStatus = 0;
             }
         } else if (moveStatus == 2){
             //if moving down
-            if (linearSlideMotorLeft.getCurrentPosition() <= position){
+            if (LSMLeft.getCurrentPosition() <= position){
                 //means you are moving up and now you are done
-                linearSlideMotorLeft.setTargetPosition(position);
-                linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                linearSlideMotorRight.setTargetPosition(position);
-                linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                LSMLeft.setTargetPosition(position);
+                LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                LSMRight.setTargetPosition(position);
+                LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 done = true;
                 requestedPos = position;
                 moveStatus = 0;
             }
         }
         if (done && (requestedPos == 0)){
-            linearSlideMotorLeft.setPower(0);
-            linearSlideMotorRight.setPower(0);
+            LSMLeft.setPower(0);
+            LSMRight.setPower(0);
         }
         return done;
     }
 
     public void RTP (){
-        if (linearSlideMotorLeft.getMode()!=DcMotor.RunMode.RUN_TO_POSITION){
-            linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (LSMLeft.getMode()!=DcMotor.RunMode.RUN_TO_POSITION){
+            LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
     }
     public void RUE (){
-        if (linearSlideMotorLeft.getMode()!=DcMotor.RunMode.RUN_USING_ENCODER){
-            linearSlideMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            linearSlideMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (LSMLeft.getMode()!=DcMotor.RunMode.RUN_USING_ENCODER){
+            LSMLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LSMRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
     public int getLeftPos(){
-        return linearSlideMotorLeft.getCurrentPosition();
+        return LSMLeft.getCurrentPosition();
     }
 
     public int getRightPos(){
-        return linearSlideMotorRight.getCurrentPosition();
+        return LSMRight.getCurrentPosition();
     }
 
     public double getLeftPower(){
-        return linearSlideMotorLeft.getPower();
+        return LSMLeft.getPower();
     }
 
     public double getRightPower(){
-        return linearSlideMotorLeft.getPower();
+        return LSMLeft.getPower();
     }
 
 }
