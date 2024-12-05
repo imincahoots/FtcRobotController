@@ -19,11 +19,12 @@ public class Lift {
     private int posLSMAvg = 0;
     private int moveStatus;
     private int requestedPos;
-    
+    public int stepButtonLift = 0;
+
     //Constructor
     public Lift(HardwareMap hwMap) {
-        LSMLeft = hwMap.dcMotor.get("LinearSlideMotorLeft");
-        LSMRight = hwMap.dcMotor.get("LinearSlideMotorRight");
+        LSMLeft = hwMap.dcMotor.get("LSMLeft");
+        LSMRight = hwMap.dcMotor.get("LSMRight");
         LSMRight.setDirection(DcMotorSimple.Direction.FORWARD);
         LSMLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         posLSMMinLeft = LSMLeft.getCurrentPosition();
@@ -35,31 +36,27 @@ public class Lift {
         LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        LSMLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        LSMLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         LSMRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //LSMLeft.setTargetPosition(posLSMMinLeft);
-        //LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //LSMRight.setTargetPosition(posLSMMinRight);
-        //LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-    
-    public void holdBottom(){
+
+    public void holdBottom() {
         holdPosition(posLSMMinLeft, posLSMMinRight);
     }
+
     //Move up or down as commanded by joystick.  Stop when joystick is 0 and hold position.
-    public void moveSlide(double speedCmd){
+    public void moveSlide(double speedCmd) {
         //linear slide
-        if (speedCmd == 0){
+        if (speedCmd == 0) {
             holdPosition(posLSMLeft, posLSMRight);
-        } else if ((posLSMLeft < posLSMMinLeft) && (speedCmd < 0)){
+        } else if ((posLSMLeft < posLSMMinLeft) && (speedCmd < 0)) {
             holdPosition(posLSMMinLeft, posLSMMinRight);
         } else if (((posLSMLeft > posLSMMaxLeft) && (speedCmd > 0))) {
             holdPosition(posLSMMaxLeft, posLSMMaxRight);
         } else if (posLSMLeft <= 15 && speedCmd == 0) {
             LSMLeft.setPower(0);
             LSMRight.setPower(0);
-        }else {
+        } else {
             LSMLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             LSMLeft.setPower(speedCmd);
             LSMRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -68,12 +65,12 @@ public class Lift {
             posLSMRight = LSMRight.getCurrentPosition();
         }
     }
-    
-    public void moveSlideWorm(double speedCmd){
-        if (speedCmd == 0){
+
+    public void moveSlideWorm(double speedCmd) {
+        if (speedCmd == 0) {
             LSMLeft.setPower(0);
             LSMRight.setPower(0);
-        }  else if (posLSMLeft <= 15 && speedCmd == 0) {
+        } else if (posLSMLeft <= 15 && speedCmd == 0) {
             LSMLeft.setPower(0);
             LSMRight.setPower(0);
         } else if (((posLSMLeft > posLSMMaxLeftWorm) && (speedCmd > 0))) {
@@ -88,7 +85,7 @@ public class Lift {
         }
     }
 
-    public boolean holdPosition(int left, int right){
+    public boolean holdPosition(int left, int right) {
         //this method hold the position it is being passed DO NOT USE IT TO GO TO A NEW POSITION
         //for that, use liftTransit
         LSMLeft.setTargetPosition(left);
@@ -97,38 +94,38 @@ public class Lift {
         LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         LSMLeft.setPower(1.0);
         LSMRight.setPower(1.0);
-        if (LSMLeft.getCurrentPosition() == left && LSMRight.getCurrentPosition() == right){
-            if(LSMLeft.getCurrentPosition() <= 0){
+        if (LSMLeft.getCurrentPosition() == left && LSMRight.getCurrentPosition() == right) {
+            if (LSMLeft.getCurrentPosition() <= 0) {
                 LSMLeft.setPower(0);
                 LSMRight.setPower(0);
             }
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
-    public boolean liftTransit (int position){
+    public boolean liftTransit(int position) {
         // pass it a position the lift should be at
         //if current position is above, go up
         boolean done = false;
-        if (position > requestedPos){
+        if (position > requestedPos) {
             moveStatus = 1;
             RUE();
             LSMLeft.setPower(1);
             LSMRight.setPower(1);
         }
         //if current position is below, go down
-        else if (position < requestedPos){
+        else if (position < requestedPos) {
             moveStatus = 2;
             RUE();
             LSMLeft.setPower(-1);
             LSMRight.setPower(-1);
         }
         //when you get there, hold position
-       if (moveStatus == 1){
+        if (moveStatus == 1) {
             //if moving up
-            if (LSMLeft.getCurrentPosition() >= position){
+            if (LSMLeft.getCurrentPosition() >= position) {
                 //means you are moving up and now you are done
                 LSMLeft.setTargetPosition(position);
                 LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -138,9 +135,9 @@ public class Lift {
                 requestedPos = position;
                 moveStatus = 0;
             }
-        } else if (moveStatus == 2){
+        } else if (moveStatus == 2) {
             //if moving down
-            if (LSMLeft.getCurrentPosition() <= position){
+            if (LSMLeft.getCurrentPosition() <= position) {
                 //means you are moving up and now you are done
                 LSMLeft.setTargetPosition(position);
                 LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -151,40 +148,42 @@ public class Lift {
                 moveStatus = 0;
             }
         }
-        if (done && (requestedPos == 0)){
+        if (done && (requestedPos == 0)) {
             LSMLeft.setPower(0);
             LSMRight.setPower(0);
         }
         return done;
     }
 
-    public void RTP (){
-        if (LSMLeft.getMode()!=DcMotor.RunMode.RUN_TO_POSITION){
+    public void RTP() {
+        if (LSMLeft.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
             LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
     }
-    public void RUE (){
-        if (LSMLeft.getMode()!=DcMotor.RunMode.RUN_USING_ENCODER){
+
+    public void RUE() {
+        if (LSMLeft.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             LSMLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             LSMRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
-    public int getLeftPos(){
+    public int getLeftPos() {
         return LSMLeft.getCurrentPosition();
     }
 
-    public int getRightPos(){
+    public int getRightPos() {
         return LSMRight.getCurrentPosition();
     }
 
-    public double getLeftPower(){
+    public double getLeftPower() {
         return LSMLeft.getPower();
     }
 
-    public double getRightPower(){
+    public double getRightPower() {
         return LSMLeft.getPower();
     }
 
 }
+
