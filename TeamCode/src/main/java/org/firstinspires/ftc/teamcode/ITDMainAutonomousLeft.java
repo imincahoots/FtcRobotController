@@ -86,7 +86,7 @@ public class ITDMainAutonomousLeft extends OpMode
     @Override
     public void init_loop() {
         telemetry.addData("heading",myDrivetrain.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        telemetry.addData("step: ",step);
+        telemetry.addData("stepButtonLift: ",step);
         telemetry.addData("fl motor target", myDrivetrain.flMot.getTargetPosition());
         telemetry.addData("bl motor target", myDrivetrain.blMot.getTargetPosition());
         telemetry.addData("fr motor target", myDrivetrain.frMot.getTargetPosition());
@@ -115,7 +115,7 @@ public class ITDMainAutonomousLeft extends OpMode
 
 
         telemetry.addData("heading",myDrivetrain.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        telemetry.addData("step: ",step);
+        telemetry.addData("stepButtonLift: ",step);
         telemetry.addData("fl motor target", myDrivetrain.flMot.getTargetPosition());
         telemetry.addData("bl motor target", myDrivetrain.blMot.getTargetPosition());
         telemetry.addData("fr motor target", myDrivetrain.frMot.getTargetPosition());
@@ -251,10 +251,10 @@ public class ITDMainAutonomousLeft extends OpMode
                     step = 150;
                 }
                 break;
-            /*case 135:                           //drop lift (I think this needs to be done around step 90)
+            /*case 135:                           //drop lift (I think this needs to be done around stepButtonLift 90)
                 stepDone = myLift.liftTransit(0);
                 if (stepDone){
-                    step = 140;
+                    stepButtonLift = 140;
                 }
                 break; */
             case 150:                           //extend arm to touch the bar

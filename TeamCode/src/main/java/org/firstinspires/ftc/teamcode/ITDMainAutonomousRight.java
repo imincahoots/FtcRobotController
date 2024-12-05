@@ -96,7 +96,7 @@ public class ITDMainAutonomousRight extends OpMode
     public void loop() {
 
         telemetry.addData("heading",myDrivetrain.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        telemetry.addData("step: ",step);
+        telemetry.addData("stepButtonLift: ",step);
         telemetry.addData("fl motor target", myDrivetrain.flMot.getTargetPosition());
         telemetry.addData("bl motor target", myDrivetrain.blMot.getTargetPosition());
         telemetry.addData("fr motor target", myDrivetrain.frMot.getTargetPosition());

@@ -246,6 +246,9 @@ public class ITDMainTeleOpv3 extends OpMode
 
         //linear slide
         myLift.moveSlideWorm(-ry2);
+        if (ry2 == 0) {
+            myLift.buttonLift(gamepad2.dpad_up, gamepad2.dpad_down);
+        }
 
         //calculates the frequency at which the program can complete one loop through the program
         double newTime = getRuntime();

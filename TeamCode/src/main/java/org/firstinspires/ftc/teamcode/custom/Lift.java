@@ -20,6 +20,8 @@ public class Lift {
     private int moveStatus;
     private int requestedPos;
     public int stepButtonLift = 0;
+    private boolean downPressed = false;
+    private boolean upPressed = false;
 
     //Constructor
     public Lift(HardwareMap hwMap) {
@@ -184,6 +186,54 @@ public class Lift {
     public double getRightPower() {
         return LSMLeft.getPower();
     }
+    public void buttonLift(boolean up, boolean down) {
 
+        if ((LSMRight.getMode() != DcMotor.RunMode.RUN_TO_POSITION) && (LSMLeft.getMode() != DcMotor.RunMode.RUN_TO_POSITION)){
+            LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        //if dpad down is pressed, add 10 to stepButtonLift
+        if (down){
+            downPressed = true;
+        } else {
+            if (downPressed && !down) {
+                stepButtonLift = stepButtonLift - 10;
+                downPressed = false;
+            }
+        }
+        //if dpad up is pressed, add 10 to stepButtonLift
+        if (up){
+            upPressed = true;
+        } else {
+            if (upPressed && !up) {
+                stepButtonLift = stepButtonLift + 10;
+                upPressed = false;
+            }
+        }
+        //sets liftTransit to go to the position corresponding to stepButtonLift
+        switch (stepButtonLift) {
+            case -10:
+                //kicks -10 back up to 0
+                stepButtonLift = 0;
+                break;
+            case 0:
+                //sets the target of the lift to be the bottom
+                liftTransit(0);
+                break;
+            case 10:
+                //sets the target of the lift to be the middle
+                liftTransit(105000);
+                break;
+            case 20:
+                //sets target to be at the top
+                liftTransit(210000);
+                break;
+            case 30:
+                //kicks 30 back down to 20
+                stepButtonLift = 20;
+                break;
+        }
+
+    }
 }
 
