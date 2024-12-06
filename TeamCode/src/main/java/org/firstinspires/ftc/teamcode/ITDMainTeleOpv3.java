@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.custom.ArmMotor;
 import org.firstinspires.ftc.teamcode.custom.Drivetrain;
 import org.firstinspires.ftc.teamcode.custom.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.custom.Lift;
@@ -62,24 +63,20 @@ import java.util.Locale;
 /*
 welcome!
 
-This is the first iteration of what will be considered the main TeleOp program for the 2024-25
-into the deep season. This is an updated version of the code that includes all basic functions of the robot
-including drivetrain, wrist servo, intake, arm actuation, and arm elevation. The code right now is pretty messy,
-but this is the first iteration of the program where I have made an attempt to condense it. I started with the
-linear slides, so you can compare this program with the previous version called "ITDDualGamepadV2"
-The logic for the linear slides is mostly done in the file "Lift", so for any confusion look there
-good luck
-p.s. I will do better commenting in future programs, I just wrote this one at like 9pm when I was exhausted
-lacked time
+This is the 3rd iteration of the main TeleOp program for the 2024-25
+into the deep season. the main differences between this mode and V2 is that
+I added in some functionality to give us the position relative to the starting position of the robot using out new fancy
+odometry computer and wheels, I re adapted the opmode to be compatible with the new wormdrives, and I added henry's request to do
+whenever you do the dpad on gamepad 2 it goes up or down as a button for added consistency when scoring.
 
-Last updated on 10/24/2024
+Last updated on 12/5/2024
 
  */
 
 @TeleOp
 public class ITDMainTeleOpv3 extends OpMode
 {
-    // Declare OpMode members.
+    // Declare OpMode members (initlaize primitve variables and set up servos that we don't initlaize in the class).
     private ElapsedTime runtime = new ElapsedTime();
     CRServo crServoRubberWheel = null;
     Servo wristServo = null;
@@ -92,9 +89,11 @@ public class ITDMainTeleOpv3 extends OpMode
     private Lift myLift;
 
     private Drivetrain myDrivetrain;
+    private ArmMotor myArmMotor;
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
     double oldTime = 0;
+
 
 
     /*
@@ -105,6 +104,7 @@ public class ITDMainTeleOpv3 extends OpMode
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
+        //this is where we initialize all of our classes and motors and such
         crServoRubberWheel = hardwareMap.crservo.get("crServoRubberWheel");
         wristServo = hardwareMap.servo.get("wristServo");
         armMotor = hardwareMap.dcMotor.get("armMotor");
@@ -112,6 +112,14 @@ public class ITDMainTeleOpv3 extends OpMode
         myLift = new Lift(hardwareMap);     // New instance of the "lift" class
         // true = school, false = home
         myDrivetrain = new Drivetrain(hardwareMap,0); // New instance of the "Drivetrain" class
+        myArmMotor = new ArmMotor(hardwareMap);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        positionArmMotor = armMotor.getCurrentPosition();
+        armMotor.setTargetPosition(positionArmMotor);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // all of this stuff is for the odometry computer, this stuff is all copied over from SensorGoBildaPinpointExample,
+        // look there for more questions
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo"); //initiallize odometry computer
         //TODO: figure out where the odometry computer is relative to the center of the robot
@@ -128,10 +136,6 @@ public class ITDMainTeleOpv3 extends OpMode
         odo.resetPosAndIMU();
 
 
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        positionArmMotor = armMotor.getCurrentPosition();
-        armMotor.setTargetPosition(positionArmMotor);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -227,22 +231,8 @@ public class ITDMainTeleOpv3 extends OpMode
         else {
             crServoRubberWheel.setPower(0);
         }
-        //arm motor
-        if (ly2 == 0){
-            armMotor.setTargetPosition(positionArmMotor);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        else {
-            armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            armMotor.setPower(ly2*0.5);
-            positionArmMotor = armMotor.getCurrentPosition();
-        }
-        if (gamepad2.x){
-            myLift.liftTransit(1610);
-        }
-        if (gamepad2.y){
-            myLift.liftTransit(0);
-        }
+        //arm motor logic!
+        myArmMotor.armMotStickControl(ly2);
 
         //linear slide
         myLift.moveSlideWorm(-ry2);
