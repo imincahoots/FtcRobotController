@@ -235,5 +235,9 @@ public class Lift {
         }
 
     }
+    /*public void overrideLift (double cmd){
+        LSMLeft.setPower(cmd);
+        LSMRight.setPower(cmd);
+    }*/
 }
 
