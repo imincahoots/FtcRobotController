@@ -235,5 +235,10 @@ public class Lift {
         }
 
     }
+    public double antiTopple(){
+        //210000 is the theoretical maximum height that the slide can go
+        double mult = LSMLeft.getCurrentPosition()/210000;
+        return mult;
+    }
 }
 

@@ -127,8 +127,8 @@ public class MotorIOTest extends OpMode {
         telemetry.addData("front right position",myDriveTrain.frMot.getCurrentPosition());
         telemetry.addData("back right position",myDriveTrain.brMot.getCurrentPosition());
         telemetry.addData("armMotor position",myArmMotor.armMot.getCurrentPosition());
-        telemetry.addData("liftMotLeft position",myLift.LSMLeft);
-        telemetry.addData("liftMotRight position",myLift.LSMRight);
+        telemetry.addData("liftMotLeft position",myLift.LSMLeft.getCurrentPosition());
+        telemetry.addData("liftMotRight position",myLift.LSMRight.getCurrentPosition());
         telemetry.addData("=== CONTROLS ===", null);
         telemetry.addData("drivetrain:","a = fl,b = bl,x = fr,y = br");
         telemetry.addData("armMotor","dpad up = up, dpad down = down");

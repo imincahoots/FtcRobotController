@@ -215,7 +215,7 @@ public class ITDMainTeleOpv3 extends OpMode
         // this is also an if statement. basically, it just does the 90 degree movements that
         // owen wanted when the left stick is not being used
 
-        myDrivetrain.fullDrive(-x,y,-rx,speedModifier, dpadUp1,dpadDown1,dpadLeft1,dpadRight1);
+        myDrivetrain.fullDrive(-x,y,-rx,speedModifier*myLift.antiTopple(), dpadUp1,dpadDown1,dpadLeft1,dpadRight1);
 
 
         //input for continuous rotation servo with rubber wheel

@@ -326,6 +326,13 @@ public class Drivetrain {
         this.setMotRTP();
     }
 
+    //TODO: make this method xD
+    public void moveToPosition (double positionX, double positionY, double heading ) {
+        //so to do this one we need to do:
+        //1. Get our position information
+        //2.
+    }
+
 
     public void setMotRTP(){
         flMot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
