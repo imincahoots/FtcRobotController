@@ -33,8 +33,8 @@ public class Lift {
         posLSMMinRight = LSMRight.getCurrentPosition();
         posLSMMaxLeft = LSMLeft.getCurrentPosition() + 2100;
         posLSMMaxRight = LSMRight.getCurrentPosition() + 2100;
-        posLSMMaxLeftWorm = LSMLeft.getCurrentPosition() + 210000;
-        posLSMMaxRightWorm = LSMRight.getCurrentPosition() + 210000;
+        posLSMMaxLeftWorm = LSMLeft.getCurrentPosition() + 4200;
+        posLSMMaxRightWorm = LSMRight.getCurrentPosition() + 4200;
         LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -222,11 +222,11 @@ public class Lift {
                 break;
             case 10:
                 //sets the target of the lift to be the middle
-                liftTransit(105000);
+                liftTransit(2100);
                 break;
             case 20:
                 //sets target to be at the top
-                liftTransit(210000);
+                liftTransit(4200);
                 break;
             case 30:
                 //kicks 30 back down to 20
@@ -236,8 +236,8 @@ public class Lift {
 
     }
     public double antiTopple(){
-        //210000 is the theoretical maximum height that the slide can go
-        double mult = LSMLeft.getCurrentPosition()/210000;
+        //4200 is the theoretical maximum height that the slide can go
+        double mult = LSMLeft.getCurrentPosition()/4200;
         return mult;
     }
 }

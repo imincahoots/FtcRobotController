@@ -135,6 +135,9 @@ public class ITDMainTeleOpv3 extends OpMode
         //resets the position of the odo computer
         odo.resetPosAndIMU();
 
+        myLift.LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        myLift.LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
 
         // Tell the driver that initialization is complete.
@@ -215,7 +218,7 @@ public class ITDMainTeleOpv3 extends OpMode
         // this is also an if statement. basically, it just does the 90 degree movements that
         // owen wanted when the left stick is not being used
 
-        myDrivetrain.fullDrive(-x,y,-rx,speedModifier*myLift.antiTopple(), dpadUp1,dpadDown1,dpadLeft1,dpadRight1);
+        myDrivetrain.fullDrive(-x,y,-rx,speedModifier, dpadUp1,dpadDown1,dpadLeft1,dpadRight1);
 
 
         //input for continuous rotation servo with rubber wheel
@@ -245,6 +248,7 @@ public class ITDMainTeleOpv3 extends OpMode
         double loopTime = newTime-oldTime;
         double frequency = 1/loopTime;
         oldTime = newTime;
+        telemetry.addData("Rev Hub Clock Speed", frequency);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Rev Hub Clock Speed", frequency);
@@ -253,6 +257,7 @@ public class ITDMainTeleOpv3 extends OpMode
         telemetry.addData("leftLiftMotor ", myLift.LSMLeft.getCurrentPosition());
         telemetry.addData("rightLiftMotor ", myLift.LSMRight.getCurrentPosition());
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
+        telemetry.addData("stepButtonLift",myLift.stepButtonLift);
     }
 
     /*

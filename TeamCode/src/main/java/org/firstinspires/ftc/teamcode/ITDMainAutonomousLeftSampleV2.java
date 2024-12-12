@@ -56,7 +56,7 @@ import org.firstinspires.ftc.teamcode.custom.Lift;
  */
 
 @Autonomous
-public class ITDMainAutonomousLeftSpecimen extends OpMode
+public class ITDMainAutonomousLeftSampleV2 extends OpMode
 {
     private Drivetrain myDrivetrain;
     private CrServo myCrServo;
@@ -65,6 +65,8 @@ public class ITDMainAutonomousLeftSpecimen extends OpMode
     private Lift myLift;
     int step = 0;
     boolean stepDone = false;
+    boolean stepDone2 = false;
+    boolean stepDone3 = false;
     ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -160,111 +162,103 @@ public class ITDMainAutonomousLeftSpecimen extends OpMode
                     step = 20;
                 }
                 break;
-                //specimen hang code for arm will be put here
-            case 20:                            //turn left 90 degrees
-                stepDone = myDrivetrain.turnToHeading(90, Drivetrain.Turn.LEFT);
+            case 20:                            // turn to basket
+                stepDone = myDrivetrain.turnToHeading(135, Drivetrain.Turn.LEFT);
                 if (stepDone){
                     step = 30;
                 }
                 break;
-            case 30:                            //forward 52 inches
-                stepDone = myDrivetrain.moveForwardInches(52);
-                if(stepDone){
+            case 30:
+                //electric slide on over to the basket diagonally while extending the lift and the arm
+                stepDone = myDrivetrain.moveDiagonal(59);
+                stepDone2 = myLift.liftTransit(4200);
+                stepDone3 = myArmMotor.armGoToAngle(-3220);
+                if (stepDone && stepDone2 && stepDone3){
                     step = 40;
                 }
                 break;
-                //put strafe code and sample pickup code here
-            case 40:                            //turn toward baskets
-                stepDone = myDrivetrain.turnToHeading(135, Drivetrain.Turn.LEFT);
+            case 40:                            //spit
+                stepDone = myCrServo.spit(1,time);
                 if (stepDone){
                     step = 50;
                 }
                 break;
-            case 50:                            //move to baskets
-                stepDone = myDrivetrain.moveForwardInches(117);
-                if (stepDone){
+            case 50:                            //turn 20 block #2 and move up the block again
+                stepDone = myArmMotor.armGoToAngle(-3000);
+                stepDone2 = myDrivetrain.turnToHeading(0, Drivetrain.Turn.RIGHT);
+                if (stepDone && stepDone2){
                     step = 60;
                 }
                 break;
-            case 60:                            //raise lift
-                stepDone = myLift.liftTransit(1610);
-                if (stepDone){
+            case 60:                            //move the arm and lift into block pickup position
+                stepDone = myArmMotor.armGoToAngle(4000);
+                stepDone2 = myLift.liftTransit(0);
+                if (stepDone && stepDone2){
                     step = 70;
                 }
                 break;
-            case 70:                            //extend arm
-                stepDone = myArmMotor.armGoToAngle(-3220);
+            case 70:                            //scoot into grabbing position
+                stepDone = myDrivetrain.moveForwardInches(6);
                 if (stepDone){
                     step = 80;
                 }
                 break;
-            case 80:                            //spit out sample
-                stepDone = myCrServo.spit(1,time);
+            case 80:                            //grab that thang
+                stepDone = myCrServo.suck(3, time);
                 if (stepDone){
-                    step = 84;
+                    step = 85;
                 }
                 break;
-            case 84:
-                stepDone = myArmMotor.armGoToAngle(-600);
-                if (stepDone){
-                    step = 87;
-                }
-                break;
-            case 87:
-                stepDone = myLift.liftTransit(0);
-                if (stepDone){
+            case 85:
+                stepDone = myDrivetrain.moveForwardInches(-6);
+                if (stepDone) {
                     step = 90;
                 }
-            // to do (resolved) I think you need to lower the lift before you start driving again
-            case 90:                            //turn away from baskets
-                stepDone = myDrivetrain.turnToHeading(-45, Drivetrain.Turn.RIGHT);
-                if (stepDone){
+                break;
+            case 90:                            //turn back to basket and go back to spit position
+                stepDone = myDrivetrain.turnToHeading(135, Drivetrain.Turn.LEFT);
+                stepDone2 = myLift.liftTransit(4200);
+                stepDone3 = myArmMotor.armGoToAngle(-3220);
+                if (stepDone && stepDone2 && stepDone3){
                     step = 100;
                 }
                 break;
-            case 100:                           //drive toward submersible
-                stepDone = myDrivetrain.moveForwardInches(24);
+            case 100:
+                stepDone = myCrServo.spit(1,time);
                 if (stepDone){
                     step = 110;
                 }
                 break;
-            case 110:                           //turn parallel to submersible
-                stepDone = myDrivetrain.turnToHeading(0, Drivetrain.Turn.LEFT);
-                if (stepDone){
+            case 110:
+                stepDone = myDrivetrain.turnToHeading(-35, Drivetrain.Turn.RIGHT);
+                stepDone2 = myLift.liftTransit(0);
+                if (stepDone && stepDone2){
                     step = 120;
                 }
                 break;
-            case 120:                           //drive along submersible
-                stepDone = myDrivetrain.moveForwardInches( 36);
+            case 120:
+                stepDone = myDrivetrain.moveForwardInches(35);
                 if (stepDone){
                     step = 130;
                 }
                 break;
-            case 130:                           //turn toward submersible
+            case 130:
                 stepDone = myDrivetrain.turnToHeading(-90, Drivetrain.Turn.RIGHT);
                 if (stepDone){
-                    step = 145;
+                    step = 140;
                 }
-                break;
-            case 145:
-                stepDone = myDrivetrain.moveForwardInches( 6);
+            case 140:
+                stepDone = myDrivetrain.moveForwardInches(6);
                 if (stepDone){
                     step = 150;
                 }
                 break;
-            /*case 135:                           //drop lift (I think this needs to be done around stepButtonLift 90)
-                stepDone = myLift.liftTransit(0);
+            case 150:
+                stepDone = myArmMotor.armGoToAngle(4000);
                 if (stepDone){
-                    stepButtonLift = 140;
-                }
-                break; */
-            case 150:                           //extend arm to touch the bar
-                stepDone = myArmMotor.armGoToAngle(-4000);
-                if (stepDone) {
                     step = 160;
                 }
                 break;
-
         }
 
     }

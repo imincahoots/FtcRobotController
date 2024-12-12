@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.custom.ArmMotor;
 import org.firstinspires.ftc.teamcode.custom.Drivetrain;
@@ -53,13 +54,16 @@ import org.firstinspires.ftc.teamcode.custom.Lift;
 @TeleOp
 public class MotorIOTest extends OpMode {
     Drivetrain myDriveTrain;
-    Lift myLift;
+    DcMotor LSMLeft = null;
+    DcMotor LSMRight = null;
     ArmMotor myArmMotor;
     @Override
     public void init() {
         myDriveTrain = new Drivetrain(hardwareMap, 2);
-        myLift = new Lift(hardwareMap);
         myArmMotor = new ArmMotor(hardwareMap);
+        LSMLeft = hardwareMap.dcMotor.get("LSMLeft");
+        LSMRight = hardwareMap.dcMotor.get("LSMRight");
+
 
 
 
@@ -104,19 +108,19 @@ public class MotorIOTest extends OpMode {
             telemetry.addData("motor: ", "back right");
 
         }else if ( gamepad1.dpad_left){
-            myLift.LSMLeft.setPower(1);
-            myLift.LSMRight.setPower(1);
+            LSMLeft.setPower(1);
+            LSMRight.setPower(1);
         }else if (gamepad1.dpad_right){
-            myLift.LSMLeft.setPower(-1);
-            myLift.LSMRight.setPower(-1);
+            LSMLeft.setPower(-1);
+            LSMRight.setPower(-1);
         }else if (gamepad1.dpad_down){
             myArmMotor.armMot.setPower(1);
         } else if (gamepad1.dpad_up){
             myArmMotor.armMot.setPower(-1);
         }else{
             myDriveTrain.setMotPow(0,0,0,0,0);
-            myLift.LSMLeft.setPower(0);
-            myLift.LSMRight.setPower(0);
+            LSMLeft.setPower(0);
+            LSMRight.setPower(0);
             myArmMotor.armMot.setPower(0);
             telemetry.addData("motor: ", "none");
         }
@@ -127,8 +131,8 @@ public class MotorIOTest extends OpMode {
         telemetry.addData("front right position",myDriveTrain.frMot.getCurrentPosition());
         telemetry.addData("back right position",myDriveTrain.brMot.getCurrentPosition());
         telemetry.addData("armMotor position",myArmMotor.armMot.getCurrentPosition());
-        telemetry.addData("liftMotLeft position",myLift.LSMLeft.getCurrentPosition());
-        telemetry.addData("liftMotRight position",myLift.LSMRight.getCurrentPosition());
+        telemetry.addData("liftMotLeft position",LSMLeft.getCurrentPosition());
+        telemetry.addData("liftMotRight position",LSMRight.getCurrentPosition());
         telemetry.addData("=== CONTROLS ===", null);
         telemetry.addData("drivetrain:","a = fl,b = bl,x = fr,y = br");
         telemetry.addData("armMotor","dpad up = up, dpad down = down");

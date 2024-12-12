@@ -7,15 +7,27 @@ public class CrServo {
     CRServo crServo = null;
     double spitStart = 0;
     double spitEnd = 0;
+    double suckStart = 0;
+    double suckEnd = 0;
 
     public CrServo(HardwareMap hwMap) {
         crServo = hwMap.crservo.get("crServoRubberWheel");
     }
 
-    public boolean suck (){
-        crServo.setPower(-1);
-        return true;
-
+    public boolean suck (double howLong, double currentTime){
+        if (suckEnd == 0){
+            suckStart = currentTime;
+            suckEnd = currentTime + howLong;
+        }
+        if (currentTime > suckStart + howLong){
+            suckStart = 0;
+            suckEnd = 0;
+            crServo.setPower(0);
+            return true;
+        } else{
+            crServo.setPower(-1);
+            return false;
+        }
     }
 
     public boolean spit (double howLong, double currentTime){
