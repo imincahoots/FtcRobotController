@@ -8,14 +8,14 @@ public class Lift {
     //LSM = Linear Slide Motor
     public DcMotor LSMLeft = null;
     public DcMotor LSMRight = null;
-    private int posLSMLeft = 0;
-    private int posLSMMinLeft = 0;
-    private int posLSMMaxLeft = 0;
-    private int posLSMRight = 0;
-    private int posLSMMinRight = 0;
-    private int posLSMMaxRight = 0;
-    private int posLSMMaxLeftWorm = 0;
-    private int posLSMMaxRightWorm = 0;
+    public int posLSMLeft = 0;
+    public int posLSMMinLeft = 0;
+    public int posLSMMaxLeft = 0;
+    public int posLSMRight = 0;
+    public int posLSMMinRight = 0;
+    public int posLSMMaxRight = 0;
+    public int posLSMMaxLeftWorm = 0;
+    public int posLSMMaxRightWorm = 0;
     private int posLSMAvg = 0;
     private int moveStatus;
     private int requestedPos;
@@ -38,7 +38,7 @@ public class Lift {
         LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        LSMLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        LSMLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         LSMRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -222,11 +222,11 @@ public class Lift {
                 break;
             case 10:
                 //sets the target of the lift to be the middle
-                liftTransit(2100);
+                liftTransit(1050);
                 break;
             case 20:
                 //sets target to be at the top
-                liftTransit(4200);
+                liftTransit(2100);
                 break;
             case 30:
                 //kicks 30 back down to 20

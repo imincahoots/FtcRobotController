@@ -27,9 +27,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.disabled;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -56,7 +57,8 @@ import org.firstinspires.ftc.teamcode.custom.Lift;
  */
 
 @Autonomous
-public class ITDMainAutonomousLeftSample extends OpMode
+@Disabled
+public class ITDMainAutonomousLeft extends OpMode
 {
     private Drivetrain myDrivetrain;
     private CrServo myCrServo;
@@ -114,13 +116,13 @@ public class ITDMainAutonomousLeftSample extends OpMode
 
 
         telemetry.addData("heading",myDrivetrain.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        telemetry.addData("stepButtonLift: ",step);
         telemetry.addData("fl motor target", myDrivetrain.flMot.getTargetPosition());
         telemetry.addData("bl motor target", myDrivetrain.blMot.getTargetPosition());
         telemetry.addData("fr motor target", myDrivetrain.frMot.getTargetPosition());
         telemetry.addData("br motor target", myDrivetrain.brMot.getTargetPosition());
         telemetry.addData("armMotor",myArmMotor.armMot.getCurrentPosition());
         telemetry.addData("servo pos",wristServo.getPosition());
-        telemetry.addData("step",step);
 
 
 
@@ -134,8 +136,8 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 myDrivetrain.setMotSRE();       // clear the encoders
                 step = 5;
                 break;
-            case 5:                            //forward 65 inches
-                stepDone = myDrivetrain.moveForwardInches(10);
+            case 5:                            //forward 15 inches
+                stepDone = myDrivetrain.moveForwardInches(15);
                 if(stepDone){
                     step = 15;
                 }
@@ -160,20 +162,18 @@ public class ITDMainAutonomousLeftSample extends OpMode
                     step = 20;
                 }
                 break;
-                //specimen hang code for arm will be put here
             case 20:                            //turn left 90 degrees
                 stepDone = myDrivetrain.turnToHeading(90, Drivetrain.Turn.LEFT);
                 if (stepDone){
                     step = 30;
                 }
                 break;
-            case 30:                            //forward 52 inches
-                stepDone = myDrivetrain.moveForwardInches(26);
+            case 30:                            //forward 39 inches
+                stepDone = myDrivetrain.moveForwardInches(24);
                 if(stepDone){
                     step = 40;
                 }
                 break;
-                //put strafe code and sample pickup code here
             case 40:                            //turn toward baskets
                 stepDone = myDrivetrain.turnToHeading(135, Drivetrain.Turn.LEFT);
                 if (stepDone){
@@ -187,7 +187,7 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 }
                 break;
             case 60:                            //raise lift
-                stepDone = myLift.liftTransit(2300);
+                stepDone = myLift.liftTransit(1610);
                 if (stepDone){
                     step = 70;
                 }
@@ -223,7 +223,7 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 }
                 break;
             case 100:                           //drive toward submersible
-                stepDone = myDrivetrain.moveForwardInches(24);
+                stepDone = myDrivetrain.moveForwardInches(18);
                 if (stepDone){
                     step = 110;
                 }
@@ -247,7 +247,7 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 }
                 break;
             case 145:
-                stepDone = myDrivetrain.moveForwardInches(20);
+                stepDone = myDrivetrain.moveForwardInches( 6);
                 if (stepDone){
                     step = 150;
                 }
