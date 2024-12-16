@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.custom.ArmMotor;
 import org.firstinspires.ftc.teamcode.custom.Drivetrain;
@@ -59,10 +60,22 @@ public class MotorIOTest extends OpMode {
     ArmMotor myArmMotor;
     @Override
     public void init() {
-        myDriveTrain = new Drivetrain(hardwareMap, 2);
+        myDriveTrain = new Drivetrain(hardwareMap, 0);
         myArmMotor = new ArmMotor(hardwareMap);
         LSMLeft = hardwareMap.dcMotor.get("LSMLeft");
         LSMRight = hardwareMap.dcMotor.get("LSMRight");
+
+        LSMLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        LSMRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        LSMLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LSMRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        LSMLeft.setPower(0);
+        LSMRight.setPower(0);
 
 
 
@@ -123,6 +136,22 @@ public class MotorIOTest extends OpMode {
             LSMRight.setPower(0);
             myArmMotor.armMot.setPower(0);
             telemetry.addData("motor: ", "none");
+        }
+
+        if (gamepad1.left_stick_y > 0){
+            LSMLeft.setPower(1);
+        } else if (gamepad1.left_stick_y < 0){
+            LSMLeft.setPower(-1);
+        }else {
+            LSMLeft.setPower(0);
+        }
+
+        if (gamepad1.right_stick_y > 0){
+            LSMRight.setPower(1);
+        } else if (gamepad1.right_stick_y < 0){
+            LSMRight.setPower(-1);
+        }else {
+            LSMRight.setPower(0);
         }
 
 

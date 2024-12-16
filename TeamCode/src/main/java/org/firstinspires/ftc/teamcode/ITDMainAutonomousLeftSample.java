@@ -135,7 +135,7 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 step = 5;
                 break;
             case 5:                            //forward 65 inches
-                stepDone = myDrivetrain.moveForwardInches(10);
+                stepDone = myDrivetrain.moveForwardInches(14);
                 if(stepDone){
                     step = 15;
                 }
@@ -181,13 +181,13 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 }
                 break;
             case 50:                            //move to baskets
-                stepDone = myDrivetrain.moveForwardInches(6);
+                stepDone = myDrivetrain.moveForwardInches(4);
                 if (stepDone){
                     step = 60;
                 }
                 break;
             case 60:                            //raise lift
-                stepDone = myLift.liftTransit(2300);
+                stepDone = myLift.liftTransit(2200);
                 if (stepDone){
                     step = 70;
                 }
@@ -199,7 +199,7 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 }
                 break;
             case 80:                            //spit out sample
-                stepDone = myCrServo.spit(1,time);
+                stepDone = myCrServo.spit(3,time);
                 if (stepDone){
                     step = 84;
                 }
@@ -217,7 +217,7 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 }
             // to do (resolved) I think you need to lower the lift before you start driving again
             case 90:                            //turn away from baskets
-                stepDone = myDrivetrain.turnToHeading(-45, Drivetrain.Turn.RIGHT);
+                stepDone = myDrivetrain.turnToHeading(-40, Drivetrain.Turn.RIGHT);
                 if (stepDone){
                     step = 100;
                 }
@@ -247,7 +247,7 @@ public class ITDMainAutonomousLeftSample extends OpMode
                 }
                 break;
             case 145:
-                stepDone = myDrivetrain.moveForwardInches(20);
+                stepDone = myDrivetrain.moveForwardInches(12);
                 if (stepDone){
                     step = 150;
                 }
