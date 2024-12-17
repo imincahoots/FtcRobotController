@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class ArmMotor {
     // initialize variables
@@ -12,6 +13,9 @@ public class ArmMotor {
     private int armMotPos = 0;
     private int armMotPosMax = 0;
     private int armMotPosMin = 0;
+    private double integralSum = 0;
+    private double lastError = 0;
+    private boolean setPointReached = false;
     //resets encoders, sets mins and maxes
     public ArmMotor(HardwareMap hwMap) {
         armMot = hwMap.dcMotor.get("armMotor");
@@ -51,6 +55,49 @@ public class ArmMotor {
             return false;
         }
 
+    }
+    public void pidControl(int armMotPos, int targetPos){
+        /*
 
+         * Proportional Integral Derivative Controller
+
+         */
+
+        double Kp = 0;
+        double Ki = 0;
+        double Kd = 0;
+
+
+
+        if (armMotPos == targetPos){
+            setPointReached = true;
+        }else{
+            setPointReached = false;
+        }
+// Elapsed timer class from SDK, please use it, it's epic
+        ElapsedTime timer = new ElapsedTime();
+
+        while (setPointReached == false) {
+
+
+            // calculate the error
+            double error = targetPos - armMotPos;
+
+            // rate of change of the error
+            double derivative = (error - lastError) / timer.seconds();
+
+            // sum of all error over time
+            integralSum = integralSum + (error * timer.seconds());
+
+            double out = (Kp * error) + (Ki * integralSum) + (Kd * derivative);
+
+            armMot.setPower(out);
+
+            lastError = error;
+
+            // reset the timer for next time
+            timer.reset();
+
+        }
     }
 }
