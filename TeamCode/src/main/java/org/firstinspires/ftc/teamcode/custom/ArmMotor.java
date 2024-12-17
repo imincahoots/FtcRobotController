@@ -101,4 +101,22 @@ public class ArmMotor {
 
         }
     }
+    public void KpTuneUp(){
+        Kp = Kp + .1;
+    }
+    public void KpTuneDown(){
+        Kp = Kp - .1;
+    }
+    public void KiTuneUp(){
+        Ki = Ki + .1;
+    }
+    public void KiTuneDown(){
+        Ki = Ki - .1;
+    }
+    public void KdTuneUp(){
+        Kd = Kd + .1;
+    }
+    public void KdTuneDown(){
+        Kd = Kd - .1;
+    }
 }
