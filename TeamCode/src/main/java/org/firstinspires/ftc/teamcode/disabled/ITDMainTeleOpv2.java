@@ -27,8 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.disabled;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -36,15 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.custom.ArmMotor;
 import org.firstinspires.ftc.teamcode.custom.Drivetrain;
-import org.firstinspires.ftc.teamcode.custom.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.custom.Lift;
-
-import java.util.Locale;
 
 /*
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -63,22 +57,27 @@ import java.util.Locale;
 /*
 welcome!
 
-This is the 3rd iteration of the main TeleOp program for the 2024-25
-into the deep season. the main differences between this mode and V2 is that
-I added in some functionality to give us the position relative to the starting position of the robot using out new fancy
-odometry computer and wheels, I re adapted the opmode to be compatible with the new wormdrives, and I added henry's request to do
-whenever you do the dpad on gamepad 2 it goes up or down as a button for added consistency when scoring.
+This is the first iteration of what will be considered the main TeleOp program for the 2024-25
+into the deep season. This is an updated version of the code that includes all basic functions of the robot
+including drivetrain, wrist servo, intake, arm actuation, and arm elevation. The code right now is pretty messy,
+but this is the first iteration of the program where I have made an attempt to condense it. I started with the
+linear slides, so you can compare this program with the previous version called "ITDDualGamepadV2"
+The logic for the linear slides is mostly done in the file "Lift", so for any confusion look there
+good luck
+p.s. I will do better commenting in future programs, I just wrote this one at like 9pm when I was exhausted
+lacked time
 
-Last updated on 12/5/2024
+Last updated on 10/24/2024
 
  */
 
 @TeleOp
-public class ITDMainTeleOpv3 extends OpMode
+@Disabled
+public class ITDMainTeleOpv2 extends OpMode
 {
-    // Declare OpMode members (initlaize primitve variables and set up servos that we don't initlaize in the class).
+    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    CRServo crServo = null;
+    CRServo crServoRubberWheel = null;
     Servo wristServo = null;
     DcMotor armMotor = null;
     int positionArmMotor = 0;
@@ -89,11 +88,6 @@ public class ITDMainTeleOpv3 extends OpMode
     private Lift myLift;
 
     private Drivetrain myDrivetrain;
-    private ArmMotor myArmMotor;
-    GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
-
-    double oldTime = 0;
-
 
 
     /*
@@ -104,41 +98,19 @@ public class ITDMainTeleOpv3 extends OpMode
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
-        //this is where we initialize all of our classes and motors and such
-        crServo = hardwareMap.crservo.get("crServoRubberWheel");
+        crServoRubberWheel = hardwareMap.crservo.get("crServoRubberWheel");
         wristServo = hardwareMap.servo.get("wristServo");
         armMotor = hardwareMap.dcMotor.get("armMotor");
 
         myLift = new Lift(hardwareMap);     // New instance of the "lift" class
-        // true = school, false = home
+                                            // true = school, false = home
         myDrivetrain = new Drivetrain(hardwareMap,0); // New instance of the "Drivetrain" class
-        myArmMotor = new ArmMotor(hardwareMap);
+
+
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         positionArmMotor = armMotor.getCurrentPosition();
         armMotor.setTargetPosition(positionArmMotor);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // all of this stuff is for the odometry computer, this stuff is all copied over from SensorGoBildaPinpointExample,
-        // look there for more questions
-
-        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo"); //initiallize odometry computer
-        //TODO: figure out where the odometry computer is relative to the center of the robot
-        //feeds the pinpoint computer the position in relation to the center of the robot
-        //for geometry purposes
-        odo.setOffsets(40, 0);
-        //feeds odometry computer the model of odometry pods you are using
-        //do not change this for the ITD season unless we decide to change what odometry wheels we are using
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        //sets the directions for the odometry wheels so they don't encode backwards
-        //TODO: figure out what way is forwards and backwards on the pod
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        //resets the position of the odo computer
-        odo.resetPosAndIMU();
-
-        myLift.LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        myLift.LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -193,71 +165,55 @@ public class ITDMainTeleOpv3 extends OpMode
         // sets wrist servo's position equal to what we just calculated
         wristServo.setPosition(trigger);
 
-        //Requests information from the pinpoint computer each loop
-        odo.update();
-
-        /*
-        gets the current Position (x & y in inches, and heading in degrees) of the robot, and prints it.
-        */
-        Pose2D pos = odo.getPosition();
-        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("Position", data);
-
-        /*
-        gets the current Velocity (x & y in mm/sec and heading in degrees/sec) and prints it.
-        */
-        Pose2D vel = odo.getVelocity();
-        String velocity = String.format(Locale.US,"{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.INCH), vel.getY(DistanceUnit.INCH), vel.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("Velocity", velocity);
-
-
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
         // but only if at least one is out of the range [-1, 1]
         // TLDR mecanum wheel drive math
         // this is also an if statement. basically, it just does the 90 degree movements that
         // owen wanted when the left stick is not being used
-
-        myDrivetrain.fullDrive(-x,y,-rx,speedModifier, dpadUp1,dpadDown1,dpadLeft1,dpadRight1);
+        
+       myDrivetrain.fullDrive(-x,y,-rx,speedModifier, dpadUp1,dpadDown1,dpadLeft1,dpadRight1);
 
 
         //input for continuous rotation servo with rubber wheel
         if (a_button && b_button) {
-            crServo.setPower(0);
+            crServoRubberWheel.setPower(0);
         }
         else if (a_button){
-            crServo.setPower(-1);
+            crServoRubberWheel.setPower(-1);
         }
         else if (b_button){
-            crServo.setPower(1);
+            crServoRubberWheel.setPower(1);
         }
         else {
-            crServo.setPower(0);
+            crServoRubberWheel.setPower(0);
         }
-        //arm motor logic!
-        myArmMotor.armMotStickControl(ly2);
+        //arm motor
+        if (ly2 == 0){
+          armMotor.setTargetPosition(positionArmMotor);
+          armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        else {
+          armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+          armMotor.setPower(ly2*0.5);
+          positionArmMotor = armMotor.getCurrentPosition();
+        }
+        if (gamepad2.x){
+            myLift.liftTransit(1610);
+        }
+        if (gamepad2.y){
+            myLift.liftTransit(0);
+        }
 
-        //linear slide
+       //linear slide
         myLift.moveSlide(-ry2);
-       // if (ry2 == 0) {
-         //   myLift.buttonLift(gamepad2.dpad_up, gamepad2.dpad_down);
-        //}
-
-        //calculates the frequency at which the program can complete one loop through the program
-        double newTime = getRuntime();
-        double loopTime = newTime-oldTime;
-        double frequency = 1/loopTime;
-        oldTime = newTime;
-        telemetry.addData("Rev Hub Clock Speed", frequency);
 
         // Show the elapsed game time and wheel power.
-        telemetry.addData("Rev Hub Clock Speed", frequency);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("LeftTrigger", gamepad1.left_trigger);
         telemetry.addData("leftLiftMotor ", myLift.LSMLeft.getCurrentPosition());
         telemetry.addData("rightLiftMotor ", myLift.LSMRight.getCurrentPosition());
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
-        telemetry.addData("stepButtonLift",myLift.stepButtonLift);
     }
 
     /*

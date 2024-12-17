@@ -274,33 +274,53 @@ public class Drivetrain {
         }
     }
 
-    public boolean moveForwardInches(int distance){
+    public boolean moveForwardInches(int distance) {
         int distanceTicks;
-        if(targetDistance == 0){        // Move not started yet
+        if (targetDistance == 0) {        // Move not started yet
             setMotSRE();                // Clear the encoders
             targetDistance = distance;
             return false;
         } else {
-            distanceTicks = (int)(distance*ticksPerInch);
+            distanceTicks = (int) (distance * ticksPerInch);
             flMot.setTargetPosition(distanceTicks);
             blMot.setTargetPosition(distanceTicks);
             frMot.setTargetPosition(distanceTicks);
             brMot.setTargetPosition(distanceTicks);
-            this.setMotRTP();
-            if (flMot.getCurrentPosition() >= distanceTicks){       // all done
-                setMotPow(0,0,0,0,0);
+            setMotRTP();
+            if (flMot.getCurrentPosition() >= distanceTicks) {       // all done
+                setMotPow(0, 0, 0, 0, 0);
                 targetDistance = 0;
                 return true;
             } else {                                                // run it forward
-                this.setMotPow(0.3,0.3,0.3,0.3, 1);
+                this.setMotPow(0.3, 0.3, 0.3, 0.3, 1);
                 return false;
             }
         }
-
-
-
-
     }
+
+        public boolean moveDiagonal(int distance){
+            int distanceTicks;
+            if (targetDistance == 0) {        // Move not started yet
+                setMotSRE();                // Clear the encoders
+                targetDistance = distance;
+                return false;
+            } else {
+                distanceTicks = (int) (distance * ticksPerInch);
+                flMot.setTargetPosition(distanceTicks);
+                blMot.setTargetPosition(blMot.getTargetPosition());
+                frMot.setTargetPosition(frMot.getCurrentPosition());
+                brMot.setTargetPosition(distanceTicks);
+                setMotRTP();
+                if (flMot.getCurrentPosition() >= distanceTicks) {       // all done
+                    setMotPow(0, 0, 0, 0, 0);
+                    targetDistance = 0;
+                    return true;
+                } else {                                                // run it diagonal
+                    setMotPow(0.3, 0, 0, 0.3, 1);
+                    return false;
+                }
+            }
+        }
     public void moveReverseInches(int distance){
         int distanceTicks = (int) (distance*ticksPerInch);
         flMot.setTargetPosition(-distanceTicks);
@@ -324,6 +344,13 @@ public class Drivetrain {
         frMot.setTargetPosition(-distanceTicks);
         brMot.setTargetPosition(distanceTicks);
         this.setMotRTP();
+    }
+
+    //TODO: make this method xD
+    public void moveToPosition (double positionX, double positionY, double heading ) {
+        //so to do this one we need to do:
+        //1. Get our position information
+        //2.
     }
 
 

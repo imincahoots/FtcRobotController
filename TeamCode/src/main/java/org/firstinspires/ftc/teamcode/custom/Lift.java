@@ -8,14 +8,14 @@ public class Lift {
     //LSM = Linear Slide Motor
     public DcMotor LSMLeft = null;
     public DcMotor LSMRight = null;
-    private int posLSMLeft = 0;
-    private int posLSMMinLeft = 0;
-    private int posLSMMaxLeft = 0;
-    private int posLSMRight = 0;
-    private int posLSMMinRight = 0;
-    private int posLSMMaxRight = 0;
-    private int posLSMMaxLeftWorm = 0;
-    private int posLSMMaxRightWorm = 0;
+    public int posLSMLeft = 0;
+    public int posLSMMinLeft = 0;
+    public int posLSMMaxLeft = 0;
+    public int posLSMRight = 0;
+    public int posLSMMinRight = 0;
+    public int posLSMMaxRight = 0;
+    public int posLSMMaxLeftWorm = 0;
+    public int posLSMMaxRightWorm = 0;
     private int posLSMAvg = 0;
     private int moveStatus;
     private int requestedPos;
@@ -27,18 +27,16 @@ public class Lift {
     public Lift(HardwareMap hwMap) {
         LSMLeft = hwMap.dcMotor.get("LSMLeft");
         LSMRight = hwMap.dcMotor.get("LSMRight");
-        LSMRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        LSMLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         posLSMMinLeft = LSMLeft.getCurrentPosition();
         posLSMMinRight = LSMRight.getCurrentPosition();
-        posLSMMaxLeft = LSMLeft.getCurrentPosition() + 2100;
-        posLSMMaxRight = LSMRight.getCurrentPosition() + 2100;
-        posLSMMaxLeftWorm = LSMLeft.getCurrentPosition() + 210000;
-        posLSMMaxRightWorm = LSMRight.getCurrentPosition() + 210000;
+        posLSMMaxLeft = LSMLeft.getCurrentPosition() + 2200;
+        posLSMMaxRight = LSMRight.getCurrentPosition() + 2200;
+        posLSMMaxLeftWorm = LSMLeft.getCurrentPosition() + 4200;
+        posLSMMaxRightWorm = LSMRight.getCurrentPosition() + 4200;
         LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        LSMLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        LSMLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         LSMRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -188,56 +186,25 @@ public class Lift {
     }
     public void buttonLift(boolean up, boolean down) {
 
-        if ((LSMRight.getMode() != DcMotor.RunMode.RUN_TO_POSITION) && (LSMLeft.getMode() != DcMotor.RunMode.RUN_TO_POSITION)){
-            LSMLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            LSMRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        //if dpad down is pressed, add 10 to stepButtonLift
-        if (down){
-            downPressed = true;
-        } else {
-            if (downPressed && !down) {
-                stepButtonLift = stepButtonLift - 10;
-                downPressed = false;
-            }
-        }
-        //if dpad up is pressed, add 10 to stepButtonLift
         if (up){
-            upPressed = true;
-        } else {
-            if (upPressed && !up) {
-                stepButtonLift = stepButtonLift + 10;
-                upPressed = false;
-            }
+            liftTransit(posLSMMaxLeft);
         }
-        //sets liftTransit to go to the position corresponding to stepButtonLift
-        switch (stepButtonLift) {
-            case -10:
-                //kicks -10 back up to 0
-                stepButtonLift = 0;
-                break;
-            case 0:
-                //sets the target of the lift to be the bottom
-                liftTransit(0);
-                break;
-            case 10:
-                //sets the target of the lift to be the middle
-                liftTransit(105000);
-                break;
-            case 20:
-                //sets target to be at the top
-                liftTransit(210000);
-                break;
-            case 30:
-                //kicks 30 back down to 20
-                stepButtonLift = 20;
-                break;
+        if (down){
+            liftTransit(posLSMMinLeft);
         }
 
     }
+<<<<<<< HEAD
     /*public void overrideLift (double cmd){
         LSMLeft.setPower(cmd);
         LSMRight.setPower(cmd);
     }*/
+=======
+    public double antiTopple(){
+        //4200 is the theoretical maximum height that the slide can go
+        double mult = LSMLeft.getCurrentPosition()/4200;
+        return mult;
+    }
+>>>>>>> 8185da7e31432a5b4f454d05438c3fad430099cf
 }
 

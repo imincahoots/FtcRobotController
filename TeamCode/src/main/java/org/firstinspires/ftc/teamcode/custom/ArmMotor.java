@@ -31,7 +31,7 @@ public class ArmMotor {
         }
         else {
             armMot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            armMot.setPower(cmd*0.5);
+            armMot.setPower(-cmd*0.75);
             armMotPos = armMot.getCurrentPosition();
         }
     }
