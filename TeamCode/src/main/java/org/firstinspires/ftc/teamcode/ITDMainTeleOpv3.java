@@ -78,7 +78,7 @@ public class ITDMainTeleOpv3 extends OpMode
 {
     // Declare OpMode members (initlaize primitve variables and set up servos that we don't initlaize in the class).
     private ElapsedTime runtime = new ElapsedTime();
-    CRServo crServo = null;
+    //CRServo crServo = null;
     Servo wristServo = null;
     DcMotor armMotor = null;
     int positionArmMotor = 0;
@@ -105,7 +105,7 @@ public class ITDMainTeleOpv3 extends OpMode
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         //this is where we initialize all of our classes and motors and such
-        crServo = hardwareMap.crservo.get("crServoRubberWheel");
+        //crServo = hardwareMap.crservo.get("crServoRubberWheel");
         wristServo = hardwareMap.servo.get("wristServo");
         armMotor = hardwareMap.dcMotor.get("armMotor");
 
@@ -222,30 +222,28 @@ public class ITDMainTeleOpv3 extends OpMode
 
 
         //input for continuous rotation servo with rubber wheel
-        if (a_button && b_button) {
-            crServo.setPower(0);
-        }
-        else if (a_button){
-            crServo.setPower(-1);
-        }
-        else if (b_button){
-            crServo.setPower(1);
-        }
-        else {
-            crServo.setPower(0);
-        }
+       // if (a_button && b_button) {
+         //   crServo.setPower(0);
+        //}
+        //else if (a_button){
+        //    crServo.setPower(-1);
+        //}
+        //else if (b_button){
+        //    crServo.setPower(1);
+        //}
+        //else {
+        //    crServo.setPower(0);
+        //}
         //arm motor logic!
-        //myArmMotor.armMotStickControl(ly2);
-        if(gamepad2.x){
-        myArmMotor.pidControl(myArmMotor.armMot.getCurrentPosition(), 2000);
-        } else{
-            myArmMotor.armMotStickControl(ly2);
+        myArmMotor.armMotStickControl(ly2);
+        if (gamepad2.x){
+        myArmMotor.pidControl(myArmMotor.armMot.getCurrentPosition(), -2000);
         }
         //linear slide
         myLift.moveSlide(-ry2);
        // if (ry2 == 0) {
          //   myLift.buttonLift(gamepad2.dpad_up, gamepad2.dpad_down);
-        //}
+
 
         //calculates the frequency at which the program can complete one loop through the program
         double newTime = getRuntime();
@@ -262,6 +260,7 @@ public class ITDMainTeleOpv3 extends OpMode
         telemetry.addData("rightLiftMotor ", myLift.LSMRight.getCurrentPosition());
         telemetry.addData("armMotor",armMotor.getCurrentPosition());
         telemetry.addData("stepButtonLift",myLift.stepButtonLift);
+        telemetry.addData("armPower", armMotor.getPower());
     }
 
     /*

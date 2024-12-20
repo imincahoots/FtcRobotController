@@ -13,12 +13,7 @@ public class ArmMotor {
     private int armMotPos = 0;
     private int armMotPosMax = 0;
     private int armMotPosMin = 0;
-    private double integralSum = 0;
-    private double lastError = 0;
     private boolean setPointReached = false;
-    public double Kp = 0;
-    public double Ki = 0;
-    public double Kd = 0;
     //resets encoders, sets mins and maxes
     public ArmMotor(HardwareMap hwMap) {
         armMot = hwMap.dcMotor.get("armMotor");
@@ -65,22 +60,26 @@ public class ArmMotor {
          * Proportional Integral Derivative Controller
 
          */
-
-
-
-
-
+        double Kp = 0.000455;
+        double Ki = 0;
+        double Kd = 0;
+        double integralSum = 0;
+        double lastError = 0;
+        armMot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotPos = armMot.getCurrentPosition();
         if (armMotPos == targetPos){
             setPointReached = true;
+            armMotPos = armMot.getCurrentPosition();
         }else{
             setPointReached = false;
+            armMotPos = armMot.getCurrentPosition();
         }
+
 // Elapsed timer class from SDK, please use it, it's epic
         ElapsedTime timer = new ElapsedTime();
 
         while (setPointReached == false) {
-
-
             // calculate the error
             double error = targetPos - armMotPos;
 
@@ -99,24 +98,14 @@ public class ArmMotor {
             // reset the timer for next time
             timer.reset();
 
+            if (armMotPos == targetPos){
+                setPointReached = true;
+                armMotPos = armMot.getCurrentPosition();
+            }else{
+                setPointReached = false;
+                armMotPos = armMot.getCurrentPosition();
+            }
+
         }
-    }
-    public void KpTuneUp(){
-        Kp = Kp + .05;
-    }
-    public void KpTuneDown(){
-        Kp = Kp - .05;
-    }
-    public void KiTuneUp(){
-        Ki = Ki + .05;
-    }
-    public void KiTuneDown(){
-        Ki = Ki - .05;
-    }
-    public void KdTuneUp(){
-        Kd = Kd + .05;
-    }
-    public void KdTuneDown(){
-        Kd = Kd - .05;
     }
 }

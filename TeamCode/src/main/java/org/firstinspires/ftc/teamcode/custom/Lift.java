@@ -35,7 +35,8 @@ public class Lift {
         posLSMMaxRightWorm = LSMRight.getCurrentPosition() + 4200;
         LSMLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LSMRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        LSMLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LSMRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LSMLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         LSMRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -47,23 +48,13 @@ public class Lift {
     //Move up or down as commanded by joystick.  Stop when joystick is 0 and hold position.
     public void moveSlide(double speedCmd) {
         //linear slide
-        if (speedCmd == 0) {
-            holdPosition(posLSMLeft, posLSMRight);
-        } else if ((posLSMLeft < posLSMMinLeft) && (speedCmd < 0)) {
-            holdPosition(posLSMMinLeft, posLSMMinRight);
-        } else if (((posLSMLeft > posLSMMaxLeft) && (speedCmd > 0))) {
-            holdPosition(posLSMMaxLeft, posLSMMaxRight);
-        } else if (posLSMLeft <= 15 && speedCmd == 0) {
-            LSMLeft.setPower(0);
-            LSMRight.setPower(0);
-        } else {
             LSMLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             LSMLeft.setPower(speedCmd);
             LSMRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             LSMRight.setPower(speedCmd);
             posLSMLeft = LSMLeft.getCurrentPosition();
             posLSMRight = LSMRight.getCurrentPosition();
-        }
+        
     }
 
     public void moveSlideWorm(double speedCmd) {
@@ -194,17 +185,14 @@ public class Lift {
         }
 
     }
-<<<<<<< HEAD
     /*public void overrideLift (double cmd){
         LSMLeft.setPower(cmd);
         LSMRight.setPower(cmd);
     }*/
-=======
     public double antiTopple(){
         //4200 is the theoretical maximum height that the slide can go
         double mult = LSMLeft.getCurrentPosition()/4200;
         return mult;
     }
->>>>>>> 8185da7e31432a5b4f454d05438c3fad430099cf
 }
 
